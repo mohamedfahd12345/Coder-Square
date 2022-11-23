@@ -62,13 +62,13 @@ namespace coder_square.Controllers
 
 
 
-        [HttpDelete, Route("/ListsDetails/{id}")]
-        public async Task<IActionResult> DeletePostFromListsDetails(int List_Id , int Post_Id)
+        [HttpDelete, Route("/Lists/{List_Id}/posts/{Post_Id}")]
+        public async Task<IActionResult> DeletePostFromList(int List_Id, int Post_Id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var TargetList = db.Saveds.Where(x => x.SavedId == List_Id).FirstOrDefault();
 
-            var target_post = db.SavedDetails.Where(x => x.PostId == Post_Id && x.SavedId==List_Id).FirstOrDefault();
+            var target_post = db.SavedDetails.Where(x => x.PostId == Post_Id && x.SavedId == List_Id).FirstOrDefault();
 
             if (TargetList is null || TargetList.UserId != userId || target_post is null)
             {
@@ -85,7 +85,7 @@ namespace coder_square.Controllers
             {
                 Console.WriteLine(ex.Message);
             }
-           
+
 
             return Ok();
 
@@ -93,8 +93,64 @@ namespace coder_square.Controllers
         }
 
 
-       
 
+
+        [HttpPost , Route("/Lists/{List_Id}/posts/{Post_Id}")]
+        public async Task<IActionResult> AddPostToList(int List_Id, int Post_Id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var TargetList = db.Saveds.Where(x => x.SavedId == List_Id).Select(x =>
+                new
+                {
+                    x.SavedId,
+                    x.UserId
+                }
+
+            ).FirstOrDefault();
+
+
+            var target_post = db.Posts.Where(x => x.Id == Post_Id).Select(x =>
+                new
+                {
+                    x.Id
+                }
+            ).FirstOrDefault();
+
+
+            if (TargetList is null || TargetList.UserId != userId || target_post is null)
+            {
+                return NotFound();
+            }
+
+            var CheckRowExist = db.SavedDetails.Where(x => x.SavedId == List_Id && x.PostId == Post_Id).FirstOrDefault();
+            
+            if(CheckRowExist is not null)
+            {
+                return Ok();
+            }
+
+            try
+            {
+                var NewSavedDetails = new SavedDetail();
+                NewSavedDetails.PostId = Post_Id;
+                NewSavedDetails.SavedId = List_Id;
+
+                await db.SavedDetails.AddAsync(NewSavedDetails);
+
+                await db.SaveChangesAsync();
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+
+            return Ok();
+
+
+        }
 
 
 
