@@ -7,15 +7,15 @@ using System.Security.Claims;
 
 namespace coder_square.Controllers
 {
-    //[Route("api/[controller]")]
+    
     [ApiController]
     [Authorize]
     public class createpostController : ControllerBase
     {
         public readonly codersquareContext db = new codersquareContext();
 
-        [HttpPost, Route("/createpost/create")]
-        public async Task<IActionResult> create(createpost createpost)
+        [HttpPost, Route("/posts")]
+        public async Task<IActionResult> CraetePost(createpost createpost)
         {
            
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -26,9 +26,10 @@ namespace coder_square.Controllers
             new_post.Likes = 0;
             new_post.NumComments = 0;
             new_post.UserId = userId;
-            db.Posts.Add(new_post);
-            db.SaveChanges();
+            await db.Posts.AddAsync(new_post);
+            await db.SaveChangesAsync();
             return Ok(new_post);
         }
+
     }
 }

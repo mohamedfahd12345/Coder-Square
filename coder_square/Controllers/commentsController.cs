@@ -14,7 +14,7 @@ namespace coder_square.Controllers
         public readonly codersquareContext db = new codersquareContext();
         
          //---------------------------CREATE COMMENTS-----------------------------------------\\ 
-        [HttpPost, Route("/comments/create")]
+        [HttpPost, Route("/comments")]
         [Authorize]
         public async Task<IActionResult> create(createcomment createcomment)
         {
@@ -24,6 +24,7 @@ namespace coder_square.Controllers
                     x.Id
                 }
                 ).FirstOrDefault();
+
             if (createcomment == null || target_post is null)
                 return NotFound();
             
@@ -38,21 +39,21 @@ namespace coder_square.Controllers
             db.SaveChanges();
 
 
-            //--------INCREMENT NUMBER OF COMMENTS FOR THIS POST IN TABLE POSTS---------\\
+            // INCREMENT NUMBER OF COMMENTS FOR THIS POST IN TABLE POSTS
             var targetPOST = db.Posts.Where(x => x.Id == createcomment.post_id).FirstOrDefault();
             targetPOST.NumComments++;
             db.Posts.Update(targetPOST);
             db.SaveChanges();
 
-            return Ok("DONE");
+            return Ok();
         }
 
 
         //------------------------VIEW ALL COMMENTS FOR SPECIFIC POST BY ID-------------------\\
-        [HttpGet, Route("/comments/View_All")]
-        public async Task<IActionResult> View_All(int id)
+        [HttpGet, Route("/comments/{post_id}")]
+        public async Task<IActionResult> View_All(int post_id)
         {
-            var target_post = db.Posts.Where(x => x.Id == id).Select(x=>
+            var target_post = db.Posts.Where(x => x.Id == post_id).Select(x=>
             new
             {
                 x.Id
@@ -63,14 +64,14 @@ namespace coder_square.Controllers
                 return NotFound();
 
 
-            //-------------------------VIEW ALL COMMENTS ---------------------------\\
+            // VIEW ALL COMMENTS
             var view_Comments = new ViewComments();
-            view_Comments.post_id = id;
+            view_Comments.post_id = post_id;
            
              view_Comments.allcomments = (from c in db.Comments
                         join u in db.AspNetUsers on c.UserId equals u.Id
 
-                        where c.PostId == id
+                        where c.PostId == post_id
 
                         select new Comments
                         {

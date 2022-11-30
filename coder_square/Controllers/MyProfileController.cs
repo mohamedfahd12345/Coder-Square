@@ -13,8 +13,9 @@ namespace coder_square.Controllers
     public class MyProfileController : ControllerBase
     {
         public readonly codersquareContext db = new codersquareContext();
+
         //--------view profile for  the user that  has been login  HIS NAME AND ALL HIS POSTS-----------\\
-        [HttpGet, Route("/MyProfile/View_Profile")]
+        [HttpGet, Route("/MyProfile")]
         public async Task<IActionResult> View_Profile()
         {
             var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -28,9 +29,10 @@ namespace coder_square.Controllers
             {
                 return NotFound();
             }
+
             var target_user = new MyProfile();
 
-            //---------------------------ADD POSTS --------------------------\\
+            // ADD His POSTS 
             target_user.his_posts = (from u in db.AspNetUsers
                                      join p in db.Posts on u.Id equals p.UserId
 
@@ -68,24 +70,24 @@ namespace coder_square.Controllers
 
 
         //------------------------------------UPDATE HIS  NAME ------------------------------------\\
-        [HttpPut, Route("/MyProfile/Update_Name")]
-        public async Task<IActionResult> Update_Name(string id,string name)
+        [HttpPut, Route("/MyProfile/{user_id}/MyName")]
+        public async Task<IActionResult> Update_Name(string user_id, string name)
         {
-            var chesk_user = db.AspNetUsers.Where(x => x.Id == id).Select(x =>
+            var chesk_user = db.AspNetUsers.Where(x => x.Id == user_id).Select(x =>
                   new
                   {
                       x.Id
                   }
             ).FirstOrDefault();
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userIdLogin = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (userId != id || id is null || chesk_user is null)
+            if (userIdLogin != user_id || user_id is null || chesk_user is null)
             {
                 return NotFound();
             }
 
-            var target_user = db.AspNetUsers.Where(x => x.Id == userId).FirstOrDefault();
+            var target_user = db.AspNetUsers.Where(x => x.Id == userIdLogin).FirstOrDefault();
             target_user.UserName = name;
 
             db.AspNetUsers.Update(target_user);
@@ -96,11 +98,11 @@ namespace coder_square.Controllers
 
 
         //----------------------------------DELETE  POST ---------------------------------\\
-        [HttpDelete, Route("/MyProfile/Delete_post")]
-        public async Task<IActionResult> Delete_post(int id)
+        [HttpDelete, Route("/MyProfile/Posts/{post_id}")]
+        public async Task<IActionResult> Delete_post(int post_id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var target_post = db.Posts.Where(x => x.Id == id).FirstOrDefault();
+            var target_post = db.Posts.Where(x => x.Id == post_id).FirstOrDefault();
 
             if(target_post is null || userId!=target_post.UserId)
             {
@@ -108,16 +110,16 @@ namespace coder_square.Controllers
             }
 
             // Delete all  related likes for this post 
-            var RelatedLikes = db.Likes.Where(x => x.PostId == id).ToList();
+            var RelatedLikes = db.Likes.Where(x => x.PostId == post_id).ToList();
             db.Likes.RemoveRange(RelatedLikes);
 
 
             // Delete all  related comments for this post 
-            var RelatedComments = db.Comments.Where(x => x.PostId == id).ToList();
+            var RelatedComments = db.Comments.Where(x => x.PostId == post_id).ToList();
             db.Comments.RemoveRange(RelatedComments);
 
             // Delete all  related Saved Details  for this post 
-            var Related_SavedDetails = db.SavedDetails.Where(x => x.PostId == id).ToList();
+            var Related_SavedDetails = db.SavedDetails.Where(x => x.PostId == post_id).ToList();
             db.SavedDetails.RemoveRange(Related_SavedDetails);
 
             //finaly delete our target post 
@@ -129,11 +131,11 @@ namespace coder_square.Controllers
 
 
         //----------------------------------UPDATE  POST ---------------------------------\\
-        [HttpPut, Route("/MyProfile/Update_Post")]
-        public async Task<IActionResult> Update_Post(int id, createpost post)
+        [HttpPut, Route("/MyProfile/Posts/{post_id}")]
+        public async Task<IActionResult> Update_Post(int post_id, createpost post)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var target_post = db.Posts.Where(x => x.Id == id).FirstOrDefault();
+            var target_post = db.Posts.Where(x => x.Id == post_id).FirstOrDefault();
 
             if (target_post is null || userId != target_post.UserId)
             {

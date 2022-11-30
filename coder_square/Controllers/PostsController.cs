@@ -9,13 +9,13 @@ namespace coder_square.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        //--------------------THIS CONTROLLER TO SHOW ALL POSTS -----------------------------\\
+        
         public readonly codersquareContext db = new codersquareContext();
 
 
         //----------------------------TO VIEW THE LASTEST POSTS--------------------------------\\
-        [HttpGet ,Route("/Posts/Get_newest") ]
-        public async Task<IActionResult> Get_newest()
+        [HttpGet ,Route("/latest-Posts") ]
+        public async Task<IActionResult> ViewLatesPosts()
         {
             var all_posts = (from u in db.AspNetUsers
                              join p in db.Posts on u.Id equals p.UserId
@@ -38,8 +38,8 @@ namespace coder_square.Controllers
 
 
         //--------------------------TO VIEW THE MOST LIKES POSTS--------------------------------\\
-        [HttpGet, Route("/Posts/most_likes")]
-        public async Task<IActionResult> most_likes()
+        [HttpGet, Route("/most-likes-posts")]
+        public async Task<IActionResult> ViewMostLikesPosts()
         {
             var all_posts = (from u in db.AspNetUsers
                              join p in db.Posts on u.Id equals p.UserId
@@ -57,6 +57,7 @@ namespace coder_square.Controllers
                                  number_comments=p.NumComments
 
                              }).OrderByDescending(x => x.Likes).ToList();
+
             return Ok(all_posts);
         }
 
