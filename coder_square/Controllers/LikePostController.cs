@@ -12,8 +12,11 @@ namespace coder_square.Controllers
     [ApiController]
     public class LikePostController : ControllerBase
     {
-        public readonly codersquareContext db = new codersquareContext();
-        
+        private codersquareContext db;
+        public LikePostController(codersquareContext db)
+        {
+            this.db = db;
+        }
         [HttpGet, Route("/LikePost/IsLiked")]
         public async Task<IActionResult> IsLiked(int post_id)
         {

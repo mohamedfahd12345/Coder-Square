@@ -12,8 +12,11 @@ namespace coder_square.Controllers
     [ApiController]
     public class FollowUserController : ControllerBase
     {
-        public readonly codersquareContext db = new codersquareContext();
-
+        private codersquareContext db;
+        public FollowUserController(codersquareContext db)
+        {
+            this.db = db;
+        }
         [HttpGet, Route("/FollowUser/IsFollowing")]
         public async Task<IActionResult> IsFollowing(string father_id)
         {

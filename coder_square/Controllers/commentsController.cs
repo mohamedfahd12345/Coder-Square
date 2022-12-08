@@ -11,9 +11,12 @@ namespace coder_square.Controllers
     [ApiController]
     public class commentsController : ControllerBase
     {
-        public readonly codersquareContext db = new codersquareContext();
-        
-         //---------------------------CREATE COMMENTS-----------------------------------------\\ 
+        private codersquareContext db;
+        public commentsController(codersquareContext db)
+        {
+            this.db = db;
+        }
+        //---------------------------CREATE COMMENTS-----------------------------------------\\ 
         [HttpPost, Route("/comments")]
         [Authorize]
         public async Task<IActionResult> create(createcomment createcomment)

@@ -12,8 +12,11 @@ namespace coder_square.Controllers
     [Authorize]
     public class createpostController : ControllerBase
     {
-        public readonly codersquareContext db = new codersquareContext();
-
+        private codersquareContext db;
+        public createpostController(codersquareContext db)
+        {
+            this.db = db;
+        }
         [HttpPost, Route("/posts")]
         public async Task<IActionResult> CraetePost(createpost createpost)
         {

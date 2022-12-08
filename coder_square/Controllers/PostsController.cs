@@ -9,9 +9,12 @@ namespace coder_square.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        
-        public readonly codersquareContext db = new codersquareContext();
 
+        private codersquareContext db;
+        public PostsController(codersquareContext db)
+        {
+            this.db = db;
+        }
 
         //----------------------------TO VIEW THE LASTEST POSTS--------------------------------\\
         [HttpGet ,Route("/latest-Posts") ]

@@ -11,8 +11,11 @@ namespace coder_square.Controllers
     [ApiController]
     public class ListsDetailsController : ControllerBase
     {
-        public readonly codersquareContext db = new codersquareContext();
-
+        private codersquareContext db;
+        public ListsDetailsController(codersquareContext db)
+        {
+            this.db = db;
+        }
         //------------------------View all posts for this list -------------------------\\
         [HttpGet, Route("/ListsDetails/{List_Id}")]
         public async Task<IActionResult> GetListsDetails(int List_Id)

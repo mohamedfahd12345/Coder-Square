@@ -11,8 +11,11 @@ namespace coder_square.Controllers
     [Authorize]
     public class ListsController : ControllerBase
     {
-        public readonly codersquareContext db = new codersquareContext();
-
+        private codersquareContext db;
+        public ListsController(codersquareContext db)
+        {
+            this.db = db;
+        }
         //-------------------TO VIEW  LISTS FOR USER THAT  HAS BEEN LOGIN ------------------\\
         [HttpGet, Route("/Lists")]
         public async Task<IActionResult> Get_My_Lists()

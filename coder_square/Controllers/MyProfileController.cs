@@ -12,8 +12,11 @@ namespace coder_square.Controllers
     [Authorize]
     public class MyProfileController : ControllerBase
     {
-        public readonly codersquareContext db = new codersquareContext();
-
+        private codersquareContext db;
+        public MyProfileController(codersquareContext db)
+        {
+            this.db = db;
+        }
         //--------view profile for  the user that  has been login  HIS NAME AND ALL HIS POSTS-----------\\
         [HttpGet, Route("/MyProfile")]
         public async Task<IActionResult> View_Profile()

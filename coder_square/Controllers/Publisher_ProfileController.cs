@@ -10,8 +10,11 @@ namespace coder_square.Controllers
     public class Publisher_ProfileController : ControllerBase
     {
 
-        public readonly codersquareContext db = new codersquareContext();
-
+        private codersquareContext db;
+        public Publisher_ProfileController(codersquareContext db)
+        {
+            this.db = db;
+        }
         //--------------- VIEW Publisher_Profile HIS NAME AND ALL HIS POSTS-----------\\
         [HttpGet, Route("/Publisher-Profile/{Publisher_id}")]
         public async Task<IActionResult> ViewPublisherProfile(string Publisher_id)

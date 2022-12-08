@@ -1,21 +1,25 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using coder_square.Helper;
+using coder_square.Models;
+
 namespace coder_square.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        private codersquareContext db;
+        public ValuesController(codersquareContext db)
         {
-            if (id == 1)
-            {
-                return Ok("done");
-            }
-            return Ok("no");
+            this.db = db;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> getall()
+        {
+            var all_p= db.Posts.ToList();
+            return Ok(all_p);
 
         }
 
