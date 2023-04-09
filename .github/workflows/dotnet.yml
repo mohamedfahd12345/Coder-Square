@@ -28,5 +28,8 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Publish
       run: dotnet publish --no-build --verbosity normal
+    - name: Run
+      run: dotnet run
+ 
     
      
