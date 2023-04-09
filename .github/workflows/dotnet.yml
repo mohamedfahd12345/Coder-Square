@@ -29,7 +29,7 @@ jobs:
     - name: Publish
       run: dotnet publish --no-build --verbosity normal
     - name: Run
-      run: dotnet run --project  Coder-Square/Coder-Square.csproj
+      run: dotnet run --project  Coder-Square/Coder-Square
  
     
      
