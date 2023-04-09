@@ -28,10 +28,9 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Publish
       run: dotnet publish --no-build --verbosity normal
-    - name: CD
-      run: cd Coder-Square
     - name: RUN
-      run: dotnet run
+      run: dotnet run Coder-Square/Coder-Square.csproj
+
     
  
     
